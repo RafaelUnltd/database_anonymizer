@@ -20,7 +20,6 @@ func NewHandler(cache cache.CacheManager) interfaces.HandlersInterface {
 func (h Handler) RegisterRoutes(e *echo.Echo) {
 	e.GET("/", h.Ping)
 
-	// TODO: Colocar middleware validando o system_token
 	anonymizationRequests := e.Group("anonymization-requests")
 	anonymizationRequests.POST("", h.PostAnonymizationRequest)
 	anonymizationRequests.GET("/:polling_key", h.GetAnonymizationStatus)

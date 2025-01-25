@@ -48,8 +48,6 @@ func (h Handler) PostAnonymizationRequest(c echo.Context) error {
 
 		err = services.Anonymize(context.Background(), request, pollingKey)
 		if err != nil {
-			// TODO: tratar o erro e escrever resultado no cache e log
-			fmt.Println(err)
 			pollingStatus, errReadChache := h.cache.ReadPollingStatus(ctx, pollingKey)
 			if errReadChache != nil {
 				fmt.Println(errReadChache)
