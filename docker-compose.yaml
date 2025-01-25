@@ -1,0 +1,50 @@
+services:
+  anonymizer:
+    container_name: anonymizer
+    build:
+      context: ./
+      dockerfile: ./app/cmd/Dockerfile
+    ports:
+      - "1323:1323"
+    volumes:
+      - ./app:/go/app/app
+      - ./go.mod:/go/app/go.mod
+      - ./go.sum:/go/app/go.sum
+      - ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro
+      - ~/.ssh/known_hosts:/root/.ssh/known_hosts:ro
+    environment:
+      - APP_ENV=development
+
+  database-input:
+    image: postgres:alpine
+    container_name: database-input
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: anonymize-input
+    ports:
+      - "5445:5432"
+    volumes:
+      - input_db:/var/lib/postgresql/data
+
+  database-output:
+    image: postgres:alpine
+    container_name: database-output
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: anonymize-output
+    ports:
+      - "5446:5432"
+    volumes:
+      - output_db:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+    container_name: redis-anonymizer
+    ports:
+      - "6381:6379"
+
+volumes:
+  input_db:
+  output_db:
